@@ -13,7 +13,15 @@ class XylophoneApp extends StatefulWidget {
 
 class _XylophoneAppState extends State<XylophoneApp> {
   bool state = false;
-  bool _firstPress = true ;
+  bool _firstPress = true;
+  AudioPlayer audioPlayer = AudioPlayer();
+  int _backgroundImage = Random().nextInt(9);
+  List<String> autoPlays = [
+    "assets/autoplays/mysterious-xylophone_160bpm_E_minor.wav",
+    "assets/autoplays/stoned-drip-xylophone_68bpm_C_minor.wav",
+    "assets/autoplays/xylophone-attack_140bpm.wav",
+    "assets/autoplays/melody.wav"
+  ];
 
   void playSound(int _id) async {
     final player = AudioCache();
@@ -42,10 +50,10 @@ class _XylophoneAppState extends State<XylophoneApp> {
         backgroundColor: Colors.black,
         body: Container(
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/sakura.jpg"), fit: BoxFit.cover,
-            )
-          ),
+              image: DecorationImage(
+            image: AssetImage("assets/sakura$_backgroundImage.jpg"),
+            fit: BoxFit.cover,
+          )),
           child: SafeArea(
             child: Center(
               child: Opacity(
@@ -53,7 +61,25 @@ class _XylophoneAppState extends State<XylophoneApp> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    buildKey(color: Colors.red, soundNumber: 1),
+                    Expanded(
+                      child: MaterialButton(
+                          enableFeedback: false,
+                          color: Colors.red,
+                          onPressed: () {
+                            playSound(1);
+                          },
+                          child: Container(
+                            alignment: Alignment.topRight,
+                            height: 20,
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                changeBackground();
+                              },
+                              backgroundColor: Colors.red,
+                              child: Icon(Icons.image),
+                            ),
+                          )),
+                    ),
                     buildKey(color: Colors.orange, soundNumber: 2),
                     buildKey(color: Colors.yellow, soundNumber: 3),
                     buildKey(color: Colors.green, soundNumber: 4),
@@ -78,12 +104,19 @@ class _XylophoneAppState extends State<XylophoneApp> {
                                     Icons.play_arrow,
                                   ),
                                   onPressed: () async {
-                                    if(_firstPress){
+                                    if (_firstPress) {
                                       _firstPress = false;
-                                       playAuto();
-                                    }
-                                    debugPrint("Spam protection firstPress: " + _firstPress.toString());
+                                      state = true;
+                                      var randomItem =
+                                          (autoPlays.toList()..shuffle()).first;
+                                      if (state) {
 
+                                        audioPlayer.play(randomItem,
+                                            isLocal: true);
+                                      }
+                                    }
+                                    debugPrint("Spam protection firstPress: " +
+                                        _firstPress.toString());
                                   },
                                 ),
                               ),
@@ -98,11 +131,11 @@ class _XylophoneAppState extends State<XylophoneApp> {
                                   child: Icon(
                                     Icons.stop,
                                   ),
-                                  onPressed: ()  {
+                                  onPressed: () {
                                     setState(() {
                                       stopAuto();
+                                      audioPlayer.stop();
                                     });
-
                                   },
                                 ),
                               ),
@@ -119,36 +152,20 @@ class _XylophoneAppState extends State<XylophoneApp> {
     );
   }
 
+  void changeBackground() {
+    setState(() {
+      int temp = Random().nextInt(9);
+      while (temp == _backgroundImage) {
+        temp = Random().nextInt(9);
+      }
+      _backgroundImage = temp;
+    });
+  }
+
   void stopAuto() {
-    setState(()  {
+    setState(() {
       state = false;
       _firstPress = true;
     });
   }
-
-  Future<void> playAuto()  async {
-    state = true;
-
-      while (state) {
-        int delay = Random().nextInt(500) + 100;
-        playSound(Random().nextInt(7) + 1);
-        await Future.delayed(
-            Duration(milliseconds: delay));
-      }
-  }
 }
-
-/*
-*
-*  void playAuto()  {
-    state = true;
-    setState(() async {
-      while (state) {
-        int delay = Random().nextInt(500) + 100;
-        playSound(Random().nextInt(7) + 1);
-        await Future.delayed(
-            Duration(milliseconds: delay));
-      }
-    });
-  }
-  * */
