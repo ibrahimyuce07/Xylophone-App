@@ -17,9 +17,9 @@ class _XylophoneAppState extends State<XylophoneApp> {
   AudioPlayer audioPlayer = AudioPlayer();
   int _backgroundImage = Random().nextInt(9);
   List<String> autoPlays = [
-    "assets/autoplays/mysterious-xylophone_160bpm_E_minor.wav",
-    "assets/autoplays/stoned-drip-xylophone_68bpm_C_minor.wav",
-    "assets/autoplays/xylophone-attack_140bpm.wav",
+    "assets/autoplays/mysterious.wav",
+    "assets/autoplays/stoned.wav",
+    "assets/autoplays/attack.wav",
     "assets/autoplays/melody.wav"
   ];
 
@@ -110,13 +110,10 @@ class _XylophoneAppState extends State<XylophoneApp> {
                                       var randomItem =
                                           (autoPlays.toList()..shuffle()).first;
                                       if (state) {
-
                                         audioPlayer.play(randomItem,
                                             isLocal: true);
                                       }
                                     }
-                                    debugPrint("Spam protection firstPress: " +
-                                        _firstPress.toString());
                                   },
                                 ),
                               ),
