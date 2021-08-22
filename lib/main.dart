@@ -14,13 +14,14 @@ class XylophoneApp extends StatefulWidget {
 class _XylophoneAppState extends State<XylophoneApp> {
   bool state = false;
   bool _firstPress = true;
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioCache audioPlayer = AudioCache();
+  AudioPlayer player = AudioPlayer(); // create this
   int _backgroundImage = Random().nextInt(9);
   List<String> autoPlays = [
-    "assets/autoplays/mysterious.wav",
-    "assets/autoplays/stoned.wav",
-    "assets/autoplays/attack.wav",
-    "assets/autoplays/melody.wav"
+    "mysterious.wav",
+    "stoned.wav",
+    "attack.wav",
+    "melody.wav"
   ];
 
   void playSound(int _id) async {
@@ -110,8 +111,8 @@ class _XylophoneAppState extends State<XylophoneApp> {
                                       var randomItem =
                                           (autoPlays.toList()..shuffle()).first;
                                       if (state) {
-                                        audioPlayer.play(randomItem,
-                                            isLocal: true);
+                                       // audioPlayer.play(randomItem);
+                                        player = await audioPlayer.play(randomItem);
                                       }
                                     }
                                   },
@@ -131,7 +132,7 @@ class _XylophoneAppState extends State<XylophoneApp> {
                                   onPressed: () {
                                     setState(() {
                                       stopAuto();
-                                      audioPlayer.stop();
+                                     player.stop();
                                     });
                                   },
                                 ),
